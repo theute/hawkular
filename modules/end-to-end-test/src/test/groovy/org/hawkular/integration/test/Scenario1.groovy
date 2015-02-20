@@ -42,7 +42,7 @@ class Scenario1 extends org.hawkular.integration.test.AbstractTestBase {
         hawk_web.type = ResourceType.URL
         hawk_web.addParameter("url","http://hawkular.org")
 
-        def response = client.post(path: "/inventory/$tenantId/resources", body : hawk_web)
+        def response = client.post(path: "inventory/$tenantId/resources", body : hawk_web)
 
         assertEquals(200, response.status)
 
@@ -52,7 +52,7 @@ class Scenario1 extends org.hawkular.integration.test.AbstractTestBase {
         def statusTime = new MetricDefinition("status.time",MetricUnit.MILLI_SECOND);
         statusTime.description = "Time to ping the target in ms"
 
-        response = client.post(path: "/inventory/$tenantId/resource/$hawk_id/metrics",
+        response = client.post(path: "inventory/$tenantId/resources/$hawk_id/metrics",
             body: [ statusCode, statusTime])
 
         assertEquals(200, response.status)
@@ -75,12 +75,12 @@ class Scenario1 extends org.hawkular.integration.test.AbstractTestBase {
 
         def end = System.currentTimeMillis()
         def start = end - 4 *3600 * 1000 // 4h earlier
-        response = client.get(path: "/metrics/$tenantId/metrics/numeric/${hawk_id}.status.time/data", query:
+        response = client.get(path: "metrics/$tenantId/metrics/numeric/${hawk_id}.status.time/data", query:
                 [start: start, end: end])
 
         // 7 define an alert
 
-        response = client.post(path: "/alerts/triggers/")
+        response = client.post(path: "alerts/triggers/")
 
     }
 
@@ -91,7 +91,7 @@ class Scenario1 extends org.hawkular.integration.test.AbstractTestBase {
 
         long time = now + (timeSkewMinutes * 60 * 1000)
 
-        response = client.post(path: "/metrics/$tenantId/metrics/numeric/$tmp/data",
+        response = client.post(path: "metrics/$tenantId/metrics/numeric/$tmp/data",
                 body: [[timestamp: time, value: value]])
         assertEquals(200, response.status)
     }

@@ -20,9 +20,9 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xalan="http://xml.apache.org/xalan"
-                xmlns:ds="urn:jboss:domain:datasources:2.0"
-                xmlns:ra="urn:jboss:domain:resource-adapters:2.0"
-                xmlns:ejb3="urn:jboss:domain:ejb3:2.0"
+                xmlns:ds="urn:jboss:domain:datasources:3.0"
+                xmlns:ra="urn:jboss:domain:resource-adapters:3.0"
+                xmlns:ejb3="urn:jboss:domain:ejb3:3.0"
                 version="2.0"
                 exclude-result-prefixes="xalan ds ra ejb3">
 
@@ -304,7 +304,8 @@
   <xsl:template match="node()[name(.)='extensions']">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <extension module="org.keycloak.keycloak-subsystem"/>
+      <extension module="org.keycloak.keycloak-server-subsystem"/>
+      <extension module="org.keycloak.keycloak-adapter-subsystem"/>
       <extension module="org.hawkular.agent.monitor"/>
     </xsl:copy>
     <xsl:call-template name="system-properties"/>
@@ -828,14 +829,10 @@
       </subsystem>
 
       <!-- Keycloak-related - our secured deployments (important) -->
-      <subsystem xmlns="urn:jboss:domain:keycloak:1.0">
-        <auth-server name="main-auth-server">
-          <enabled>true</enabled>
-          <web-context>auth</web-context>
-        </auth-server>
+      <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
         <realm name="hawkular">
           <auth-server-url>/auth</auth-server-url>
-          <auth-server-url-for-backend-requests><xsl:text disable-output-escaping="yes">http://${jboss.bind.address:127.0.0.1}:${jboss.http.port:8080}/auth</xsl:text></auth-server-url-for-backend-requests>
+          <auth-server-url-for-backend-requests>http://&#36;{jboss.bind.address:127.0.0.1}:&#36;{jboss.http.port:8080}/auth</auth-server-url-for-backend-requests>
           <ssl-required>none</ssl-required>
         </realm>
         <secure-deployment name="hawkular-accounts.war">
